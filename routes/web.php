@@ -20,6 +20,8 @@ use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Auth\RegisterController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -103,3 +105,12 @@ Route::get('/sendEvent', function () {
 Route::post('/checkout', 'App\Http\Controllers\PaymentController@checkout')->name('checkout');
 
  Route::get('/success', 'App\Http\Controllers\PaymentController@success')->name('success');
+
+// register
+Route::get('/register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+
+Route::post('/register', 'Auth\RegisterController@register')->name('register.submit');
+
+
+
+

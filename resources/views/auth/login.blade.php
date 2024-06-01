@@ -24,6 +24,15 @@
         </path>
     </svg>
     <div class="container">
+        @if (session('success'))
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="alert alert-success" role="alert">
+                    {{ session('success') }}
+                </div>
+            </div>
+        </div>
+        @endif
         <div class="row vertical-center">
             <div class="col-lg-5 col-md-8 col-sm-12  mx-auto" style="z-index: 1">
                 <div class="glassmorphism card-signin my-5">
@@ -41,7 +50,7 @@
                                 <h5 class="card-title text-center">Hotel Information System</h5>
                             </div>
                         </div>
-                        <form onsubmit="return disableButton()" class="form-signin" action="/postLogin" method="POST">
+                        <form id="login-form" onsubmit="return disableButton()" class="form-signin" action="/postLogin" method="POST">
                             @csrf
                             <div class="row">
                                 <div class="col-lg-12">
@@ -67,12 +76,13 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <div id="recaptcha" class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" data-callback="onRecaptchaSubmit"></div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="w-100 d-flex justify-content-center">
                                         <button id="btn_submit" class="btn btn-lg btn-primary text-white fw-bold p-2"
-                                            type="submit" style="border-radius: 2rem;">
+                                            type="submit" style="border-radius: 2rem;" disabled> <!-- Initially disabled -->
                                             <div id="loading_submit" class="spinner-border hide" role="status"
                                                 style="width: 15px; height: 15px">
                                             </div>
@@ -84,7 +94,7 @@
                                 </div>
                             </div>
                             <hr class="my-4">
-                            {{-- <p class="text-center">Doesnt have any account? <a href="/register">register</a></p> --}}
+                            <p class="text-center">Doesnt have any account? <a href="{{ route('register') }}">register</a></p>
                         </form>
                     </div>
                 </div>
@@ -96,12 +106,55 @@
             d="M0,224L48,213.3C96,203,192,181,288,154.7C384,128,480,96,576,122.7C672,149,768,235,864,234.7C960,235,1056,149,1152,117.3C1248,85,1344,107,1392,117.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
         </path>
     </svg>
-
+    
     <script>
+        // Function to enable or disable the login button based on reCAPTCHA response
+        function enableLoginButton(response) {
+            // If reCAPTCHA response is received, enable the login button
+            if (response) {
+                $("#btn_submit").prop("disabled", false);
+            } else {
+                // If reCAPTCHA response is not received, keep the login button disabled
+                $("#btn_submit").prop("disabled", true);
+            }
+        }
+
         function disableButton() {
             $("#loading_submit").removeClass("hide");
             $("#text_submit").addClass("hide");
             $("#btn_submit").addClass("isLoading").attr('disabled', 'disabled');
         }
     </script>
+
+    <!-- Add the reCAPTCHA script -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+    <script>
+        // Function to handle reCAPTCHA callback
+        function onRecaptchaSubmit(response) {
+            // Enable or disable the login button based on reCAPTCHA response
+            enableLoginButton(response);
+        }
+
+        // Function to enable or disable the login button based on reCAPTCHA response
+        function enableLoginButton(response) {
+            // If reCAPTCHA response is received, enable the login button
+            if (response) {
+                $("#btn_submit").prop("disabled", false);
+            } else {
+                // If reCAPTCHA response is not received, keep the login button disabled
+                $("#btn_submit").prop("disabled", true);
+            }
+        }
+
+        // Function to handle form submission
+        function disableButton() {
+            // Hide the button text and show the loading spinner
+            $("#loading_submit").removeClass("hide");
+            $("#text_submit").addClass("hide");
+            // Add isLoading class to style the button appropriately and disable it
+            $("#btn_submit").addClass("isLoading").attr('disabled', 'disabled');
+        }
+    </script>
 @endsection
+
