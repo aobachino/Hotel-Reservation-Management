@@ -1,4 +1,5 @@
 # Hotel-Reservation-Management
+For sse group project
 - Reservation
 ![alt text](https://github.com/WailanTirajoh/laravel_hotel/blob/main/example-b.png?raw=true)
 
