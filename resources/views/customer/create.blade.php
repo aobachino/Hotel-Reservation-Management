@@ -3,6 +3,15 @@
 @section('content')
     <div class="row justify-content-md-center">
         <div class="col-lg-8">
+            @if (session('success'))
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="alert alert-success" role="alert">
+                        {{ session('success') }}
+                    </div>
+                </div>
+            </div>
+            @endif
             <div class="card shadow-sm border">
                 <div class="card-header">
                     <h2>Add Customer</h2>

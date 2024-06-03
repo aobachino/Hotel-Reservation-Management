@@ -5,7 +5,11 @@
 - Dashboard
 ![alt text](https://github.com/WailanTirajoh/laravel_hotel/blob/main/example.png?raw=true)
 
+- Login
+![alt text](image.png)
 
+- Register Customer User
+![alt text](image-1.png)
 
 ## Instalation 
 
