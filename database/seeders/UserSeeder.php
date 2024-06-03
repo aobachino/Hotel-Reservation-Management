@@ -33,37 +33,5 @@ class UserSeeder extends Seeder
             'random_key' => Str::random(60)
         ]);
 
-        User::create([
-            'name' => 'Tong',
-            'email' => 'aaaa@aaaa.utm.my',
-            'password' => Hash::make('tong'),
-            'role' => 'Admin',
-            'random_key' => Str::random(60)
-        ]);
-
-        User::create([
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'role' => 'Customer',
-            'password' => Hash::make('john'),
-            'random_key' => Str::random(60), // You may generate random keys if needed
-        ]);
-
-        User::create([
-            'name' => 'Jane Smith',
-            'email' => 'jane@example.com',
-            'role' => 'Customer',
-            'password' => Hash::make('jane'),
-            'random_key' => Str::random(60), // You may generate random keys if needed
-        ]);
-
-        User::create([
-            'name' => 'Alice Johnson',
-            'email' => 'alice@example.com',
-            'role' => 'Customer',
-            'password' => Hash::make('alice'),
-            'random_key' => Str::random(60), // You may generate random keys if needed
-        ]);
-
     }
 }
