@@ -51,5 +51,10 @@ npm run build
 ### Login:
     Add user into "UserSeeder.php", and you can login email and password.
 
+## System Flow
+![image](https://github.com/aobachino/Hotel-Reservation-Management/assets/45359669/810323de-a248-45b9-a742-0cb8be082189)
+
+
+
 ## Entity Relationship Diagram
 ![alt text](https://github.com/WailanTirajoh/laravel_hotel/blob/main/erd.PNG?raw=true)
