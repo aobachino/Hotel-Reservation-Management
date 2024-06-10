@@ -51,5 +51,5 @@ npm run build
 ### Login:
     Add user into "UserSeeder.php", and you can login email and password.
 
-## ERD
+## Entity Relationship Diagram
 ![alt text](https://github.com/WailanTirajoh/laravel_hotel/blob/main/erd.PNG?raw=true)
