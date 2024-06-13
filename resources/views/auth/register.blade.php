@@ -91,6 +91,9 @@
                                     <div class="form-label-group">
                                         <input type="password" id="password" name="password" autocomplete="new-password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" value="" required>
                                         <label for="password">Password</label>
+                                        <small class="form-text text-muted">
+                                            Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.
+                                        </small>
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>

@@ -8,7 +8,7 @@ use App\Models\Customer;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -34,6 +34,10 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $user = $this->userRepository->store($request);
+
+        // Log event: User created
+        Log::info('User created', ['user_id' => $user->id, 'email' => $user->email]);
+
         return redirect()->route('user.index')->with('success', 'User ' . $user->name . ' created');
     }
 
@@ -54,16 +58,25 @@ class UserController extends Controller
     public function update(User $user, UpdateCustomerRequest $request)
     {
         $user->update($request->all());
-        return redirect()->route('user.index')->with('success', 'User ' . $user->name . ' udpated!');
+
+        // Log event: User updated
+        Log::info('User updated', ['user_id' => $user->id, 'email' => $user->email]);
+
+        return redirect()->route('user.index')->with('success', 'User ' . $user->name . ' updated!');
     }
 
     public function destroy(User $user)
     {
         try {
+            $userName = $user->name;
             $user->delete();
-            return redirect()->route('user.index')->with('success', 'User ' . $user->name . ' deleted!');
+
+            // Log event: User deleted
+            Log::info('User deleted', ['user_id' => $user->id, 'email' => $user->email]);
+
+            return redirect()->route('user.index')->with('success', 'User ' . $userName . ' deleted!');
         } catch (\Exception $e) {
-            return redirect()->route('user.index')->with('failed', 'Customer ' . $user->name . ' cannot be deleted! Error Code:' . $e->errorInfo[1]);;
+            return redirect()->route('user.index')->with('failed', 'Customer ' . $user->name . ' cannot be deleted! Error Code:' . $e->errorInfo[1]);
         }
     }
 }

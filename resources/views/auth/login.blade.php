@@ -33,6 +33,16 @@
             </div>
         </div>
         @endif
+    
+        @if (session('failed'))
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="alert alert-danger" role="alert">
+                    {{ session('failed') }}
+                </div>
+            </div>
+        </div>
+        @endif
         <div class="row vertical-center">
             <div class="col-lg-5 col-md-8 col-sm-12  mx-auto" style="z-index: 1">
                 <div class="glassmorphism card-signin my-5">

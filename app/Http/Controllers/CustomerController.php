@@ -42,27 +42,38 @@ class CustomerController extends Controller
                 $input['job'] = htmlspecialchars(strip_tags($input['job']));
                 $input['gender'] = htmlspecialchars(strip_tags($input['gender']));
                 
-                // Validate input data
-                $validator = Validator::make($input, [
-                    'name' => 'required|string|max:255',
-                    'email' => 'required|string|email|max:255|unique:users',
-                    'password' => [
-                        'required',
-                        'string',
-                        'min:8',
-                        'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/'
-                    ],
-                    'birthdate' => 'required|date',
-                ], [
-                    'name.required' => 'The name field is required.',
-                    'email.required' => 'The email field is required.',
-                    'email.email' => 'The email must be a valid email address.',
-                    'password.required' => 'The password field is required.',
-                    'password.min' => 'The password must be at least :min characters.',
-                    'password.regex' => 'The password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.',
-                    'birthdate.required' => 'The birthdate field is required.',
-                    'birthdate.date' => 'The birthdate must be a valid date.'
-                ]);
+        // Validate input data
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/'
+            ],
+            'password_confirmation' => 'required|same:password',
+            'birthdate' => 'required|date',
+            'gender' => 'required|in:Male,Female',
+            'address' => 'required|string|max:255',
+            'job' => 'required|string|max:255',
+        ], [
+            'name.required' => 'The name field is required.',
+            'email.required' => 'The email field is required.',
+            'email.email' => 'The email must be a valid email address.',
+            'email.unique' => 'The email has already been taken.',
+            'password.required' => 'The password field is required.',
+            'password.min' => 'The password must be at least :min characters.',
+            'password.regex' => 'The password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.',
+            'password_confirmation.required' => 'The password confirmation field is required.',
+            'password_confirmation.same' => 'The password confirmation does not match.',
+            'birthdate.required' => 'The birthdate field is required.',
+            'birthdate.date' => 'The birthdate must be a valid date.',
+            'gender.required' => 'Please select a gender.',
+            'gender.in' => 'Gender must be either Male or Female.',
+            'address.required' => 'The address field is required.',
+            'job.required' => 'The job field is required.',
+        ]);
         
                 if ($validator->fails()) {
                     return redirect()->route('customer.create')->withErrors($validator)->withInput();

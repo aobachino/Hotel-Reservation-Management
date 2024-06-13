@@ -17,6 +17,7 @@ use App\Repositories\PaymentRepository;
 use App\Repositories\ReservationRepository;
 use App\Repositories\TransactionRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TransactionRoomReservationController extends Controller
 {
@@ -90,6 +91,9 @@ class TransactionRoomReservationController extends Controller
         $transaction = $transactionRepository->store($request, $customer, $room);
         $status = 'Down Payment';
         $payment = $paymentRepository->store($request, $transaction, $status);
+
+        // Log events
+        Log::info('Reservation added by ' . $customer->name);
 
         $superAdmins = User::where('role', 'Super')->get();
 
