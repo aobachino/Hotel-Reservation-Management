@@ -54,6 +54,9 @@ Route::group(['middleware' => ['auth', 'checkRole:Super,Admin']], function () {
         Route::post('/{customer}/{room}/payDownPayment', [TransactionRoomReservationController::class, 'payDownPayment'])->name('payDownPayment');
     });
 
+    Route::delete('/customer/{customer}', [CustomerController::class, 'destroy'])->name('customer.destroy');
+    Route::post('/customers/store', [CustomerController::class, 'store'])->name('customer.store');
+    
     Route::resource('customer', CustomerController::class);
     Route::resource('type', TypeController::class);
     Route::resource('room', RoomController::class);
@@ -63,6 +66,9 @@ Route::group(['middleware' => ['auth', 'checkRole:Super,Admin']], function () {
 
     Route::get('/payment', [PaymentController::class, 'index'])->name('payment.index');
     Route::get('/payment/{payment}/invoice', [PaymentController::class, 'invoice'])->name('payment.invoice');
+    Route::post('/checkout', 'App\Http\Controllers\PaymentController@checkout')->name('checkout');
+    Route::get('/success', 'App\Http\Controllers\PaymentController@success')->name('success');
+
 
     Route::get('/transaction/{transaction}/payment/create', [PaymentController::class, 'create'])->name('transaction.payment.create');
     Route::post('/transaction/{transaction}/payment/store', [PaymentController::class, 'store'])->name('transaction.payment.store');
@@ -101,10 +107,6 @@ Route::get('/sendEvent', function () {
         // event(new NewReservationEvent($message, $superAdmin));
     }
 });
-
-Route::post('/checkout', 'App\Http\Controllers\PaymentController@checkout')->name('checkout');
-
- Route::get('/success', 'App\Http\Controllers\PaymentController@success')->name('success');
 
 // register
 Route::get('/register', 'Auth\RegisterController@showRegistrationForm')->name('register');

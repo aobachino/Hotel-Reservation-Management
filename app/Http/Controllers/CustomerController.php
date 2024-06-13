@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Validation\ValidationException;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Models\Customer;
 use App\Models\User;
@@ -9,6 +10,11 @@ use App\Repositories\CustomerRepository;
 use App\Repositories\ImageRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class CustomerController extends Controller
 {
@@ -19,29 +25,43 @@ class CustomerController extends Controller
         $this->customerRepository = $customerRepository;
     }
 
+    // Method to display the list of customers
     public function index(Request $request)
     {
+        Log::info('Fetching customer list.');
         $customers = $this->customerRepository->get($request);
+        
+        // Decrypt sensitive fields for each customer
+        foreach ($customers as $customer) {
+            $customer->address = Crypt::decryptString($customer->address);
+            $customer->job = Crypt::decryptString($customer->job);
+        }
+
+        Log::info('Customer list fetched successfully.');
+
         return view('customer.index', compact('customers'));
     }
 
     public function create(Request $request)
     {
+        Log::info('Accessing customer creation page.');
         return view('customer.create');
     }
 
     public function store(StoreCustomerRequest $request)
     {
-                // Get the input data
-                $input = $request->all();
+        Log::info('Storing new customer.');
+        
+        // Get the input data
+        $input = $request->all();
 
-                // Sanitize input data against XSS
-                $input['name'] = htmlspecialchars(strip_tags($input['name']));
-                $input['birthdate'] = htmlspecialchars(strip_tags($input['birthdate']));
-                $input['address'] = htmlspecialchars(strip_tags($input['address']));
-                $input['job'] = htmlspecialchars(strip_tags($input['job']));
-                $input['gender'] = htmlspecialchars(strip_tags($input['gender']));
-                
+        // Sanitize input data against XSS
+        $input['name'] = htmlspecialchars(strip_tags($input['name']));
+        $input['birthdate'] = htmlspecialchars(strip_tags($input['birthdate']));
+        $input['address'] = htmlspecialchars(strip_tags($input['address']));
+        $input['job'] = htmlspecialchars(strip_tags($input['job']));
+        $input['gender'] = htmlspecialchars(strip_tags($input['gender']));
+
         // Validate input data
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -75,33 +95,142 @@ class CustomerController extends Controller
             'job.required' => 'The job field is required.',
         ]);
         
-                if ($validator->fails()) {
-                    return redirect()->route('customer.create')->withErrors($validator)->withInput();
-                }
-        
-        $customer = $this->customerRepository->store($input);
-        return redirect('customer')->with('success', 'Customer ' . $customer->name . ' created');
+        if ($validator->fails()) {
+            Log::warning('Validation failed for customer creation.', [
+                'errors' => $validator->errors()->toArray()
+            ]);
+            return redirect()->route('customer.create')->withErrors($validator)->withInput();
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // Encrypt sensitive data
+            $encryptedAddress = Crypt::encryptString($input['address']);
+            $encryptedJob = Crypt::encryptString($input['job']);
+
+            // Create the user using Eloquent ORM against SQL injection
+            $user = User::create([
+                'name' => $input['name'],
+                'email' => $request->email,
+                'role' => 'Customer',
+                'random_key' => Str::random(60),
+                'password' => Hash::make($request->password),
+            ]);
+
+            // Eloquent ORM against SQL injection
+            Customer::create([
+                'name' => $input['name'],
+                'address' => $encryptedAddress,
+                'job' => $encryptedJob,
+                'birthdate' => $input["birthdate"],
+                'user_id' => $user->id,
+                'gender' => $input['gender'],
+            ]);
+
+            DB::commit();
+
+            Log::info('Registration successful', [
+                'user_id' => $user->id,
+                'email' => $user->email
+            ]);
+
+            // Redirect to a success page or customer page
+            return redirect('customer')->with('success', 'Registration successful!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Registration failed', [
+                'error' => $e->getMessage()
+            ]);
+
+            return redirect()->route('customer')->with('error', 'Registration failed. Please try again.');
+        }
     }
 
     public function show(Customer $customer)
     {
+        Log::info('Showing customer details.', ['customer_id' => $customer->id]);
         return view('customer.show', compact('customer'));
     }
 
     public function edit(Customer $customer)
     {
+        Log::info('Accessing customer edit page.', ['customer_id' => $customer->id]);
+        $customer->address = Crypt::decryptString($customer->address);
+        $customer->job = Crypt::decryptString($customer->job);
         return view('customer.edit', ['customer' => $customer]);
     }
 
     public function update(Customer $customer, StoreCustomerRequest $request)
     {
-        $customer->update($request->all());
-        return redirect('customer')->with('success', 'customer ' . $customer->name . ' udpated!');
+        // Log the start of the update process
+        Log::info('Updating customer.', ['customer_id' => $customer->id]);
+    
+        // Validate the incoming request
+        $validatedData = $request->validated();
+    
+        // Prepare an array to hold only the updated fields for Customer
+        $updateCustomerData = [];
+    
+        // Check each field and update if it's included in the request
+        if (isset($validatedData['name'])) {
+            $updateCustomerData['name'] = $validatedData['name'];
+        }
+    
+        if (isset($validatedData['birthdate'])) {
+            $updateCustomerData['birthdate'] = $validatedData['birthdate'];
+        }
+    
+        if (isset($validatedData['gender'])) {
+            $updateCustomerData['gender'] = $validatedData['gender'];
+        }
+    
+        if (isset($validatedData['address'])) {
+            $updateCustomerData['address'] = Crypt::encryptString($validatedData['address']);
+        }
+    
+        if (isset($validatedData['job'])) {
+            $updateCustomerData['job'] = Crypt::encryptString($validatedData['job']);
+        }
+    
+        // Update customer data with the filtered array of updated fields
+        $customer->update($updateCustomerData);
+    
+        // Update the related User model
+        try {
+            $user = User::findOrFail($customer->user_id);
+    
+            // Prepare an array to hold only the updated fields for User
+            $updateUserData = [];
+    
+            if (isset($validatedData['email'])) {
+                $updateUserData['email'] = $validatedData['email'];
+            }
+    
+            if (isset($validatedData['role'])) {
+                $updateUserData['role'] = $validatedData['role'];
+            }
+    
+            // Update user data with the filtered array of updated fields
+            $user->update($updateUserData);
+    
+        } catch (\Exception $e) {
+            Log::error('Failed to update related User model.', ['error' => $e->getMessage()]);
+            throw ValidationException::withMessages(['error' => 'Failed to update related User model.']);
+        }
+    
+        // Log the successful update
+        Log::info('Customer and related User updated successfully.', ['customer_id' => $customer->id]);
+    
+        // Redirect to the customer list page with success message
+        return redirect('customer')->with('success', 'Customer ' . $customer->name . ' updated!');
     }
 
     public function destroy(Customer $customer, ImageRepository $imageRepository)
     {
         try {
+            Log::info('Attempting to delete customer.', ['customer_id' => $customer->id]);
             $user = User::find($customer->user->id);
             $avatar_path = public_path('img/user/' . $user->name . '-' . $user->id);
 
@@ -112,12 +241,14 @@ class CustomerController extends Controller
                 $imageRepository->destroy($avatar_path);
             }
 
+            Log::info('Customer deleted successfully.', ['customer_id' => $customer->id]);
             return redirect('customer')->with('success', 'Customer ' . $customer->name . ' deleted!');
         } catch (\Exception $e) {
             $errorMessage = "";
             if($e->errorInfo[0] == "23000") {
                 $errorMessage = "Data still connected to other tables";
             }
+            Log::error('Failed to delete customer.', ['customer_id' => $customer->id, 'error' => $e->getMessage()]);
             return redirect('customer')->with('failed', 'Customer ' . $customer->name . ' cannot be deleted! ' . $errorMessage);
         }
     }

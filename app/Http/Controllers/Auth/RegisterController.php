@@ -1,30 +1,22 @@
 <?php
 
-// app/Http/Controllers/Auth/RegisterController.php
+namespace App\Http\Controllers;
 
-namespace App\Http\Controllers\Auth;
-
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Customer;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
-class RegisterController extends Controller
+class CustomerController extends Controller
 {
-    // Method to display the registration form
-    public function showRegistrationForm()
-    {
-        return view('auth.register');
-    }
-
     // Method to handle the registration form submission
     public function register(Request $request)
     {
-
         // Get the input data
         $input = $request->all();
 
@@ -34,7 +26,7 @@ class RegisterController extends Controller
         $input['address'] = htmlspecialchars(strip_tags($input['address']));
         $input['job'] = htmlspecialchars(strip_tags($input['job']));
         $input['gender'] = htmlspecialchars(strip_tags($input['gender']));
-        
+
         // Validate input data
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -72,31 +64,49 @@ class RegisterController extends Controller
             return redirect()->route('register')->withErrors($validator)->withInput();
         }
 
-        // Create the user using Eloquent ORM against SQL injection
-        $user = User::create([
-            'name' => $input['name'],
-            'email' => $request->email,
-            'role' => 'Customer',
-            'random_key' => Str::random(60),
-            'password' => Hash::make($request->password),
-        ]);
+        DB::beginTransaction();
 
-        // Eloquent ORM against SQL injection
-        Customer::create([
-            'name' => $input['name'],
-            'address' => $input['address'],
-            'job' => $input["job"],
-            'birthdate' => $input["birthdate"],
-            'user_id' => $user->id,
-            'gender' => $input["gender"],
-        ]);
+        try {
+            // Encrypt sensitive data
+            $encryptedAddress = Crypt::encryptString($input['address']);
+            $encryptedJob = Crypt::encryptString($input['job']);
 
-        Log::info('Registration successful', [
-            'user_id' => $user->id,
-            'email' => $user->email
-        ]);
-        
-        // Redirect to a success page or home page
-        return redirect('/login')->with('success', 'Registration successful!');
+            // Create the user using Eloquent ORM against SQL injection
+            $user = User::create([
+                'name' => $input['name'],
+                'email' => $request->email,
+                'role' => 'Customer',
+                'random_key' => Str::random(60),
+                'password' => Hash::make($request->password),
+            ]);
+
+            // Eloquent ORM against SQL injection
+            Customer::create([
+                'name' => $input['name'],
+                'address' => $encryptedAddress,
+                'job' => $encryptedJob,
+                'birthdate' => $input["birthdate"],
+                'user_id' => $user->id,
+                'gender' => $input['gender'],
+            ]);
+
+            DB::commit();
+
+            Log::info('Registration successful', [
+                'user_id' => $user->id,
+                'email' => $user->email
+            ]);
+
+            // Redirect to a success page or home page
+            return redirect('/login')->with('success', 'Registration successful!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Registration failed', [
+                'error' => $e->getMessage()
+            ]);
+
+            return redirect()->route('register')->with('error', 'Registration failed. Please try again.');
+        }
     }
 }

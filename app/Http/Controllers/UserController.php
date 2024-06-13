@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Crypt;
 
 class UserController extends Controller
 {
@@ -41,10 +42,16 @@ class UserController extends Controller
         return redirect()->route('user.index')->with('success', 'User ' . $user->name . ' created');
     }
 
+    // Method to show the user's information
     public function show(User $user)
     {
         if ($user->role === "Customer") {
             $customer = Customer::where('user_id', $user->id)->first();
+
+            // Decrypt the sensitive data
+            $customer->address = Crypt::decryptString($customer->address);
+            $customer->job = Crypt::decryptString($customer->job);
+
             return view('customer.show', compact('customer'));
         }
         return view('user.show', compact('user'));
