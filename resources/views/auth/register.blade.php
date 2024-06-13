@@ -97,13 +97,13 @@
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
-                                            </span>                                
+                                            </span>
                                             @enderror
                                         </div>
                                         <div class="form-label-group">
-                                            <input type="password" id="password_konfirmasi" name="password_konfirmasi" class="form-control @error('password_konfirmasi') is-invalid @enderror" placeholder="Repeat Password" value="" required>
-                                            <label for="password_konfirmasi">Confirm Password</label>
-                                            @error('password_konfirmasi')
+                                            <input type="password" id="password_confirmation" name="password_confirmation" class="form-control @error('password_confirmation') is-invalid @enderror" placeholder="Repeat Password" value="" required>
+                                            <label for="password_confirmation">Confirm Password</label>
+                                            @error('password_confirmation')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>

@@ -66,7 +66,7 @@ class RegisterController extends Controller
             'gender.in' => 'Gender must be either Male or Female.',
             'address.required' => 'The address field is required.',
             'job.required' => 'The job field is required.',
-        ]);        
+        ]);
 
         if ($validator->fails()) {
             return redirect()->route('register')->withErrors($validator)->withInput();
