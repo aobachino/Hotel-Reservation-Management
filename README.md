@@ -9,6 +9,9 @@ For sse group project
 - Login
 ![alt text](image.png)
 
+- Login - failed
+<img width="770" alt="image" src="https://github.com/aobachino/Hotel-Reservation-Management/assets/45359669/e9440d7c-b5fe-480b-af9d-64a3cd5b1299">
+
 - Register Customer User
 ![alt text](image-1.png)
 
