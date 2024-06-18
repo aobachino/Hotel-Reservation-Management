@@ -21,17 +21,9 @@ class UserSeeder extends Seeder
             'name' => 'Aoba Chino',
             'email' => 'chino@graduate.utm.my',
             'password' => Hash::make('aoba'),
-            'role' => 'Admin',
+            'role' => 'Super',
             'random_key' => Str::random(60)
         ]);
 
-                // User::factory(5)->create();
-        User::create([
-            'name' => 'Wailan',
-            'email' => 'wailantirajoh@gmail.com',
-            'password' => Hash::make('wailan'),
-            'role' => 'Super',
-            'random_key' => Str::random(60),
-        ]);
     }
 }
