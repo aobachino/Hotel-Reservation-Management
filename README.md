@@ -35,9 +35,8 @@ docker-compose up -d --build
 ```
 
 ### Access
-```
-[http://localhost:8000/login](http://localhost:8000/login)
-```
+- [http://localhost:8000/login](http://localhost:8000/login)
+
 
 ### Login:
  - username: chino@graduate.utm.my
@@ -61,7 +60,6 @@ docker-compose stop
 ```
 docker-compose down
 ```
-
 
 ## System Flow
 ![image](https://github.com/aobachino/Hotel-Reservation-Management/assets/45359669/810323de-a248-45b9-a742-0cb8be082189)
