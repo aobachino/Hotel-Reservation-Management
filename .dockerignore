@@ -1,0 +1,15 @@
+# Exclude version control directories
+.git
+.svn
+
+# Exclude editor and IDE files
+.vscode
+.idea
+
+# Exclude node_modules (if not needed in the image)
+node_modules
+
+# Exclude build artifacts and temporary files
+*.log
+*.tmp
+.DS_Store

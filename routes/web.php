@@ -18,9 +18,9 @@ use App\Http\Controllers\RoomStatusController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -109,9 +109,9 @@ Route::get('/sendEvent', function () {
 });
 
 // register
-Route::get('/register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 
-Route::post('/register', 'Auth\RegisterController@register')->name('register.submit');
+Route::post('/register', [RegisterController::class, 'register'])->name('postregister');
 
 
 
