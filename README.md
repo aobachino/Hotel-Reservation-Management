@@ -10,18 +10,16 @@ For sse group project
 ![alt text](image.png)
 
 - Login - failed
- 
-  <img width="770" alt="image" src="https://github.com/aobachino/Hotel-Reservation-Management/assets/45359669/e9440d7c-b5fe-480b-af9d-64a3cd5b1299">
+  ![image](https://github.com/aobachino/Hotel-Reservation-Management/assets/45359669/e9440d7c-b5fe-480b-af9d-64a3cd5b1299)
 
 - Register Customer User
-  
-  <img width="712" alt="image" src="https://github.com/aobachino/Hotel-Reservation-Management/assets/45359669/15eeb940-e2e8-4926-af17-eb03cb7fe6f0">
+    ![image](https://github.com/aobachino/Hotel-Reservation-Management/assets/45359669/15eeb940-e2e8-4926-af17-eb03cb7fe6f0)
 
 - Register Varidation
+  ![image](https://github.com/aobachino/Hotel-Reservation-Management/assets/45359669/42b279ba-1e5b-4cb3-89a3-f55fcea9aff3)
+  ![image](https://github.com/aobachino/Hotel-Reservation-Management/assets/45359669/3c3466ca-d21b-4604-990a-a70473072cd4)
+  ![image](https://github.com/aobachino/Hotel-Reservation-Management/assets/45359669/66a20699-30d5-4733-840d-3d8c3b4f7f88)
 
-  <img width="764" alt="Screenshot 2024-06-13 100511" src="https://github.com/aobachino/Hotel-Reservation-Management/assets/45359669/42b279ba-1e5b-4cb3-89a3-f55fcea9aff3">
-  <img width="764" alt="image" src="https://github.com/aobachino/Hotel-Reservation-Management/assets/45359669/3c3466ca-d21b-4604-990a-a70473072cd4">
-  <img width="764" alt="image" src="https://github.com/aobachino/Hotel-Reservation-Management/assets/45359669/66a20699-30d5-4733-840d-3d8c3b4f7f88">
 
 
 ## Instalation 
