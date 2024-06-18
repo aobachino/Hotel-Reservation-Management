@@ -26,27 +26,42 @@ For sse group project
 
 ## Instalation 
 
-### Init config
-- Prerequisites
- - Docker: Install Docker
+### Prerequisites
+- Docker: [Install Docker](https://docs.docker.com/engine/install/)
 
-- Build and Run with Docker Compose First time
+### Build and Run with Docker Compose First time
 ```
 docker-compose up -d --build
 ```
 
+### Access
+```
+[http://localhost:8000/login](http://localhost:8000/login)
+```
+
+### Login:
+ - username: chino@graduate.utm.my
+ - password: aoba    
+
 ### Run from next time
 ```
-docker-compose up -d
+docker-compose up -d (back ground)
 ```
 or 
 ```
 docker-compose up
 ```
 
-### Login:
- - username: chino@graduate.utm.my
- - password: aoba    
+### Stop
+```
+docker-compose stop
+```
+
+### Remove Container
+```
+docker-compose down
+```
+
 
 ## System Flow
 ![image](https://github.com/aobachino/Hotel-Reservation-Management/assets/45359669/810323de-a248-45b9-a742-0cb8be082189)
