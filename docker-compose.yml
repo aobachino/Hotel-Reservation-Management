@@ -37,28 +37,10 @@ services:
       PUSHER_APP_CLUSTER: ap1
     depends_on:
       - db
-      #- frontend
     volumes:
       - .:/var/www/html
     command: >
-      sh -c "sleep 20 && php artisan migrate:fresh --seed && php artisan key:generate && php artisan serve --host 0.0.0.0 --port 8000"
-
-  # frontend:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.vite
-  #   container_name: vite-frontend
-  #   restart: unless-stopped
-  #   working_dir: /var/www/html
-  #   volumes:
-  #     - .:/var/www/html
-  #   ports:
-  #     - "5173:5173"
-  #   environment:
-  #     NODE_ENV: development
-  #     VITE_PUSHER_APP_KEY: ABCDE
-  #     VITE_PUSHER_APP_CLUSTER: ap1
-  #   command: [ "npm", "run", "dev" ]
+      sh -c "composer install && sleep 40 && php artisan migrate:fresh --seed && php artisan key:generate && php artisan serve --host 0.0.0.0 --port 8000"
 
   db:
     image: mysql:5.7
@@ -67,3 +49,9 @@ services:
       MYSQL_DATABASE: hotel_app
     ports:
       - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:
+    driver: local
