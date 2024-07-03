@@ -28,20 +28,20 @@
 
 ### Build and Run with Docker Compose First time
 ```
-docker-compose up -d --build
+docker-compose up --build
 ```
 
 ### Access
 - [http://localhost:8000/login](http://localhost:8000/login)
 
 
-### Login:
+### Login (You can add Seeder class if you want more data):
  - username: chino@graduate.utm.my
  - password: aoba    
 
 ### Run from next time
 ```
-docker-compose up -d (back ground)
+docker-compose up -d # back ground
 ```
 or 
 ```
