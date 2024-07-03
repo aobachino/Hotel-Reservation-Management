@@ -1,9 +1,9 @@
 # Hotel-Reservation-Management - For sse group project
 - Reservation
-![alt text](https://github.com/WailanTirajoh/laravel_hotel/blob/main/example-b.png?raw=true)
+![alt text](example-b.png)
 
 - Dashboard
-![alt text](https://github.com/WailanTirajoh/laravel_hotel/blob/main/example.png?raw=true)
+![alt text](example.png)
 
 - Login
 ![alt text](image.png)
