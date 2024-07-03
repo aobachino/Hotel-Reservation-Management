@@ -11,7 +11,7 @@ services:
     environment:
       APP_NAME: MyHotel
       APP_ENV: local
-      APP_KEY: base64:gE9KsaHG2uCt15SXZdspudC+7q9ElaTwxP2v+rKHyt8=
+      APP_KEY:
       APP_DEBUG: 'true'
       APP_URL: http://localhost
       LOG_CHANNEL: stack
@@ -40,7 +40,7 @@ services:
     volumes:
       - .:/var/www/html
     command: >
-      sh -c "composer install && sleep 40 && php artisan migrate:fresh --seed && php artisan key:generate && php artisan serve --host 0.0.0.0 --port 8000"
+      sh -c "cp .env.example .env && composer install && npm install && npm run production && sleep 40 && php artisan migrate:fresh --seed && php artisan key:generate && php artisan serve --host 0.0.0.0 --port 8000"
 
   db:
     image: mysql:5.7
